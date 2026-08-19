@@ -687,3 +687,75 @@ a {
   font-weight: 700;
   text-align: center;
 }
+
+/* Featured Image Drag & Drop Selector */
+.featured-image-dropzone {
+  border: 2px dashed var(--border-subtle);
+  border-radius: 12px;
+  padding: 2.25rem 1.5rem;
+  text-align: center;
+  background: var(--bg-admin);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
+.featured-image-dropzone:hover, .featured-image-dropzone.dragover {
+  border-color: var(--color-brand);
+  background: var(--color-brand-light);
+}
+.dropzone-icon {
+  font-size: 1.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  display: inline-block;
+}
+.dropzone-text {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+  display: block;
+}
+.dropzone-subtext {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+  display: block;
+}
+.image-preview-container {
+  margin-top: 1rem;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  display: none;
+  border: 1px solid var(--border-subtle);
+}
+.image-preview-container img {
+  width: 100%;
+  height: auto;
+  max-height: 180px;
+  object-fit: cover;
+  display: block;
+}
+.remove-preview-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(15, 23, 42, 0.8);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.remove-preview-btn:hover {
+  background: var(--color-red);
+}

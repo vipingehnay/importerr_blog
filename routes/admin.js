@@ -37,20 +37,16 @@ try {
 
 // Multer upload configurations
 const UPLOADS_DIR = path.join(__dirname, '../public/uploads');
-if (!fs.existsSync(UPLOADS_DIR)) {
-  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+try {
+  if (!fs.existsSync(UPLOADS_DIR)) {
+    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+  }
+} catch (e) {
+  console.warn('Could not create uploads directory (might be read-only):', e);
 }
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, UPLOADS_DIR);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    const baseName = path.basename(file.originalname, ext).replace(/[^a-z0-9]/gi, '-').toLowerCase();
-    cb(null, `raw-${Date.now()}-${baseName}${ext}`);
-  }
-});
+// Use memoryStorage to prevent lambda disk write failure crashes
+const storage = multer.memoryStorage();
 
 const upload = multer({
   storage,
@@ -63,7 +59,7 @@ const upload = multer({
     if (mimetype && extname) {
       return cb(null, true);
     }
-    cb(new Error('Only image files (JPG, PNG, WebP, AVIF) are supported.'));
+    cb(new Error('Only images (JPEG, JPG, PNG, WEBP, AVIF) are allowed.'));
   }
 });
 
@@ -679,6 +675,9 @@ router.post('/media/bulk', (req, res) => {
 
 router.post('/media/upload', upload.single('image'), async (req, res) => {
   if (!req.file) {
+    if (req.query.json === 'true' || req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+      return res.status(400).json({ success: false, error: 'No file selected.' });
+    }
     return res.redirect('/blog/admin/media');
   }
 
@@ -692,43 +691,38 @@ router.post('/media/upload', upload.single('image'), async (req, res) => {
   let finalWidth = 800;
   let finalHeight = 450;
   let finalSize = req.file.size;
+  let fileUrlPath = '';
+  let writtenToDisk = false;
 
   try {
     if (sharp) {
-      // 1. Process and compress image using sharp to WebP format
-      const metadata = await sharp(req.file.path).metadata();
-      
-      // Calculate responsive dimensions keeping 16:9 ratio
-      finalWidth = 800;
-      finalHeight = 450;
-      
-      await sharp(req.file.path)
+      // 1. Process and compress image in-memory using sharp to WebP format
+      await sharp(req.file.buffer)
         .resize(finalWidth, finalHeight, { fit: 'cover' })
         .webp({ quality: 80 })
         .toFile(destPath);
       
       // Get final file size
       finalSize = fs.statSync(destPath).size;
-      
-      // Unlink original raw upload file
-      fs.unlinkSync(req.file.path);
+      writtenToDisk = true;
     } else {
-      // Fallback: copy file without sharp processing
-      const fallbackPath = path.join(UPLOADS_DIR, req.file.filename);
-      fs.renameSync(req.file.path, fallbackPath);
+      // Fallback: write buffer to file without sharp processing
+      fs.writeFileSync(destPath, req.file.buffer);
+      writtenToDisk = true;
     }
+    fileUrlPath = `/uploads/${sharp ? webpFilename : req.file.filename || `raw-${Date.now()}-${rawBaseName}${ext}`}`;
   } catch (e) {
-    console.error('Image compression failed, using original file:', e);
-    // Safe rename fallback
-    try {
-      fs.renameSync(req.file.path, path.join(UPLOADS_DIR, req.file.filename));
-    } catch(err){}
+    console.warn('Image write to disk failed (possibly read-only filesystem). Falling back to Base64:', e);
+    // Fallback: encode file buffer to base64 data URI
+    const base64Data = req.file.buffer.toString('base64');
+    const mime = req.file.mimetype || 'image/jpeg';
+    fileUrlPath = `data:${mime};base64,${base64Data}`;
   }
 
-  const fileUrlPath = `/uploads/${sharp ? webpFilename : req.file.filename}`;
+  const filenameValue = writtenToDisk ? (sharp ? webpFilename : req.file.filename || `raw-${Date.now()}-${rawBaseName}${ext}`) : `base64-${Date.now()}`;
 
   db.insert('media', {
-    filename: sharp ? webpFilename : req.file.filename,
+    filename: filenameValue,
     url: fileUrlPath,
     altText: altText ? altText.trim() : 'Importerr product image',
     width: finalWidth,
@@ -736,6 +730,10 @@ router.post('/media/upload', upload.single('image'), async (req, res) => {
     sizeBytes: finalSize,
     uploadedAt: Date.now()
   });
+
+  if (req.query.json === 'true' || req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+    return res.json({ success: true, url: fileUrlPath });
+  }
 
   res.redirect('/blog/admin/media');
 });
@@ -990,6 +988,92 @@ router.post('/subscribers/bulk', (req, res) => {
 router.post('/subscribers/delete/:id', (req, res) => {
   db.delete('subscribers', s => s.id === req.params.id);
   res.redirect('/blog/admin/subscribers');
+});
+
+// CMS Article Background Auto-Save API Endpoint
+router.post('/api/autosave', (req, res) => {
+  let { id } = req.body;
+  const {
+    title, slug, excerpt, content, featuredImage, category, tags, author, status,
+    isFeatured, pillarArticle, publishedAt, seo_title, seo_description, canonical_url,
+    og_title, og_description, og_image, twitter_title, twitter_description, seo_index, seo_follow,
+    key_takeaways, faq_q, faq_a
+  } = req.body;
+
+  // Compile Key Takeaways
+  const takeawaysList = (key_takeaways || '')
+    .split('\n')
+    .map(line => line.trim())
+    .filter(line => line.length > 0);
+
+  // Compile FAQs
+  const faqList = [];
+  if (faq_q && faq_a) {
+    const questions = Array.isArray(faq_q) ? faq_q : [faq_q];
+    const answers = Array.isArray(faq_a) ? faq_a : [faq_a];
+    
+    questions.forEach((q, idx) => {
+      if (q.trim() && answers[idx] && answers[idx].trim()) {
+        faqList.push({ q: q.trim(), a: answers[idx].trim() });
+      }
+    });
+  }
+
+  let finalSlug = (slug || '').trim();
+  if (!finalSlug && title) {
+    finalSlug = title.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+  }
+
+  const now = new Date().toISOString();
+  
+  const articleData = {
+    title: (title || 'Untitled Draft').trim(),
+    slug: finalSlug,
+    excerpt: (excerpt || '').trim(),
+    content: content || '',
+    featuredImage: (featuredImage || '').trim() || 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=800&h=450&q=80',
+    category: category || '',
+    tags: Array.isArray(tags) ? tags : (tags ? [tags] : []),
+    author: author || 'auth_1',
+    status: status || 'draft',
+    isFeatured: isFeatured === 'true',
+    pillarArticle: pillarArticle === 'true',
+    publishedAt: publishedAt ? new Date(publishedAt).toISOString() : null,
+    updatedAt: now,
+    keyTakeaways: takeawaysList,
+    faq: faqList,
+    seo: {
+      title: (seo_title || '').trim(),
+      description: (seo_description || '').trim(),
+      canonicalUrl: (canonical_url || '').trim(),
+      ogTitle: (og_title || '').trim(),
+      ogDescription: (og_description || '').trim(),
+      ogImage: (og_image || '').trim(),
+      twitterTitle: (twitter_title || '').trim(),
+      twitterDescription: (twitter_description || '').trim(),
+      index: seo_index === 'true',
+      follow: seo_follow === 'true'
+    }
+  };
+
+  let articleId = id;
+  if (articleId) {
+    const existing = db.findOne('articles', a => a.id === articleId);
+    if (existing) {
+      if (existing.publishedAt) {
+        articleData.publishedAt = existing.publishedAt;
+      }
+      db.update('articles', a => a.id === articleId, articleData);
+    } else {
+      articleData.id = articleId;
+      db.insert('articles', articleData);
+    }
+  } else {
+    const inserted = db.insert('articles', articleData);
+    articleId = inserted.id;
+  }
+
+  res.json({ success: true, id: articleId, updatedAt: now });
 });
 
 module.exports = router;
