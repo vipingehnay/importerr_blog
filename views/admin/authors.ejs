@@ -1,0 +1,186 @@
+<%- include('layout/header') %>
+
+<div class="admin-header-row" style="margin-bottom: 2.5rem;">
+  <div>
+    <h1 class="admin-page-title">Manage Authors</h1>
+    <p style="color: var(--text-sub); margin-top: 0.25rem;">Create, edit, or remove article author profiles to control signatures on read views.</p>
+  </div>
+</div>
+
+<div class="editor-layout" style="grid-template-columns: 1fr 380px; gap: 2rem;">
+  
+  <!-- Authors List (Left Column) -->
+  <div class="card" style="border-radius: 16px;">
+    <div class="card-header" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+      <span>Authors Profiles</span>
+    </div>
+    <div class="card-body" style="padding: 0;">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th style="width: 80px; text-align: center;">Avatar</th>
+            <th>Name</th>
+            <th>Designation</th>
+            <th>Slug Directory</th>
+            <th style="text-align: right; width: 160px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% authors.forEach(auth => { %>
+            <tr>
+              <td style="text-align: center; vertical-align: middle;">
+                <img src="<%= auth.photo || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&h=80&q=80' %>" alt="<%= auth.name %>" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--border-light); display: inline-block; box-shadow: 0 0 0 1px var(--color-brand); vertical-align: middle;">
+              </td>
+              <td style="font-weight: 700; color: var(--text-main);"><%= auth.name %></td>
+              <td style="font-size: 0.82rem; color: var(--text-muted); font-weight: 500;"><%= auth.designation %></td>
+              <td><code style="background: var(--bg-admin); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; border: 1px solid var(--border-light);">/blog/author/<%= auth.slug %></code></td>
+              <td style="text-align: right; vertical-align: middle;">
+                <div style="display: inline-flex; gap: 0.35rem; justify-content: flex-end; align-items: center;">
+                  <button type="button" class="btn btn-secondary edit-auth-btn" style="padding: 0.4rem 0.75rem; font-size: 0.75rem; border-radius: 6px;" 
+                          data-id="<%= auth.id %>"
+                          data-name="<%= auth.name %>"
+                          data-slug="<%= auth.slug %>"
+                          data-desig="<%= auth.designation %>"
+                          data-photo="<%= auth.photo %>"
+                          data-bio="<%= auth.bio %>"
+                          data-linkedin="<%= auth.social ? auth.social.linkedin : '' %>"
+                          data-twitter="<%= auth.social ? auth.social.twitter : '' %>">
+                    Edit
+                  </button>
+                  <form action="/blog/admin/authors/delete/<%= auth.id %>" method="POST" style="display: inline;" data-confirm="Are you sure you want to delete this author? Current articles will be unassigned.">
+                    <button type="submit" class="btn btn-danger" style="padding: 0.4rem 0.75rem; font-size: 0.75rem; border-radius: 6px;">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Create/Edit Form (Right Column Sidebar Card) -->
+  <div class="card" style="border-radius: 16px; height: fit-content; position: sticky; top: 100px;">
+    <div class="card-header" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+      <span id="form-header-title">Create Author</span>
+    </div>
+    <div class="card-body" style="padding: 1.5rem;">
+      <form action="/blog/admin/authors/create" method="POST" id="author-form">
+        <input type="hidden" name="id" id="auth-id">
+        
+        <div class="form-group">
+          <label for="auth-name">Full Name</label>
+          <input type="text" id="auth-name" name="name" class="form-control" placeholder="e.g. Vipin Kumar" required style="border-radius: 8px;">
+        </div>
+        
+        <div class="form-group">
+          <label for="auth-slug">URL Slug</label>
+          <input type="text" id="auth-slug" name="slug" class="form-control" placeholder="vipin-kumar" required style="border-radius: 8px; background: #FAFAFA;">
+        </div>
+
+        <div class="form-group">
+          <label for="auth-desig">Designation</label>
+          <input type="text" id="auth-desig" name="designation" class="form-control" placeholder="e.g. Founder & Sourcing Expert" required style="border-radius: 8px;">
+        </div>
+
+        <div class="form-group">
+          <label for="auth-photo">Profile Photo URL</label>
+          <input type="text" id="auth-photo" name="photo" class="form-control" placeholder="https://..." required style="border-radius: 8px;">
+        </div>
+        
+        <div class="form-group">
+          <label for="auth-bio">Biography (Bio)</label>
+          <textarea id="auth-bio" name="bio" class="form-control" placeholder="Short biography explaining credentials and sourcing experience..." rows="4" required style="border-radius: 8px; line-height: 1.45;"></textarea>
+        </div>
+        
+        <div style="border-top: 1px solid var(--border-light); margin-top: 1.5rem; padding-top: 1.25rem;">
+          <h4 style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; margin-bottom: 1rem; color: var(--text-muted); letter-spacing: 0.05em;">Social Profiles (Optional)</h4>
+          
+          <div class="form-group">
+            <label for="auth-linkedin">LinkedIn URL</label>
+            <input type="url" id="auth-linkedin" name="linkedin" class="form-control" placeholder="https://linkedin.com/in/..." style="border-radius: 8px;">
+          </div>
+          
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="auth-twitter">Twitter / X URL</label>
+            <input type="url" id="auth-twitter" name="twitter" class="form-control" placeholder="https://twitter.com/..." style="border-radius: 8px;">
+          </div>
+        </div>
+
+        <div style="margin-top: 1.75rem; display: flex; flex-direction: column; gap: 0.5rem;">
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; border-radius: 20px;">
+            Save Author Profile
+          </button>
+          <button type="button" id="reset-form-btn" class="btn btn-secondary" style="width: 100%; padding: 0.75rem; border-radius: 20px; display: none; justify-content: center; align-items: center;">
+            Clear & Create New
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const editBtns = document.querySelectorAll('.edit-auth-btn');
+    const form = document.getElementById('author-form');
+    const formTitle = document.getElementById('form-header-title');
+    const resetBtn = document.getElementById('reset-form-btn');
+    
+    const inputId = document.getElementById('auth-id');
+    const inputName = document.getElementById('auth-name');
+    const inputSlug = document.getElementById('auth-slug');
+    const inputDesig = document.getElementById('auth-desig');
+    const inputPhoto = document.getElementById('auth-photo');
+    const inputBio = document.getElementById('auth-bio');
+    const inputLinkedin = document.getElementById('auth-linkedin');
+    const inputTwitter = document.getElementById('auth-twitter');
+
+    // Name-to-Slug auto filler
+    inputName.addEventListener('input', () => {
+      if (!inputId.value) { // Only auto-fill on creation
+        inputSlug.value = inputName.value
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .replace(/\s+/g, '-');
+      }
+    });
+
+    editBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Change form action to update
+        form.action = `/blog/admin/authors/update/${btn.dataset.id}`;
+        formTitle.textContent = `Edit Author: ${btn.dataset.name}`;
+        resetBtn.style.display = 'inline-flex';
+        
+        // Populate inputs
+        inputId.value = btn.dataset.id;
+        inputName.value = btn.dataset.name;
+        inputSlug.value = btn.dataset.slug;
+        inputDesig.value = btn.dataset.desig;
+        inputPhoto.value = btn.dataset.photo;
+        inputBio.value = btn.dataset.bio;
+        inputLinkedin.value = btn.dataset.linkedin;
+        inputTwitter.value = btn.dataset.twitter;
+        
+        // Smooth scroll to form
+        window.scrollTo({
+          top: form.getBoundingClientRect().top + window.scrollY - 120,
+          behavior: 'smooth'
+        });
+      });
+    });
+
+    resetBtn.addEventListener('click', () => {
+      form.action = '/blog/admin/authors/create';
+      formTitle.textContent = 'Create Author';
+      resetBtn.style.display = 'none';
+      form.reset();
+      inputId.value = '';
+    });
+  });
+</script>
+
+<%- include('layout/footer') %>

@@ -1,0 +1,160 @@
+<%- include('layout/header') %>
+
+<div class="admin-header-row" style="margin-bottom: 2.5rem;">
+  <div>
+    <h1 class="admin-page-title">Integration & Blog Settings</h1>
+    <p style="color: var(--text-sub); margin-top: 0.25rem;">Configure tracking tags, analytic tags, and global marketing elements.</p>
+  </div>
+</div>
+
+<% if (typeof success !== 'undefined' && success) { %>
+  <div style="background: var(--badge-pub-bg); border: 1px solid var(--badge-pub-border); color: var(--badge-pub-txt); font-weight: 700; padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 2rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; justify-content: center; box-shadow: var(--shadow-sm);">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <%= success %>
+  </div>
+<% } %>
+
+<form action="/blog/admin/settings/update" method="POST">
+  <div class="editor-layout" style="grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+    
+    <!-- Left Column -->
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
+      <!-- Left Card 1: Tracking Integrations -->
+      <div class="card" style="border-radius: 16px;">
+        <div class="card-header" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+          <span>Analytics & Tracking Integrations</span>
+        </div>
+        <div class="card-body" style="padding: 2rem;">
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.75rem; line-height: 1.45;">
+            These tags are automatically rendered on all client pages. Do not paste the full script code, only paste the Measurement IDs.
+          </p>
+
+          <div class="form-group">
+            <label for="ga_id">Google Analytics 4 Measurement ID</label>
+            <input type="text" id="ga_id" name="google_analytics_id" class="form-control" placeholder="G-XXXXXXXXXX" value="<%= settings.google_analytics_id || '' %>" style="border-radius: 8px;">
+            <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 0.25rem;">Format: G- followed by letters/digits. Leave blank to disable tracking.</span>
+          </div>
+          
+          <div class="form-group" style="margin-top: 1.5rem; margin-bottom: 0;">
+            <label for="gtm_id">Google Tag Manager Container ID</label>
+            <input type="text" id="gtm_id" name="google_tag_manager_id" class="form-control" placeholder="GTM-XXXXXXX" value="<%= settings.google_tag_manager_id || '' %>" style="border-radius: 8px;">
+            <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 0.25rem;">Format: GTM- followed by letters/digits.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Left Card 2: Logo Configurations -->
+      <div class="card" style="border-radius: 16px;">
+        <div class="card-header" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+          <span>Logo & Branding Configurations</span>
+        </div>
+        <div class="card-body" style="padding: 2rem;">
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.75rem; line-height: 1.45;">
+            Configure custom logo images for the main site header and footer. You can upload logo assets to the Media Library and paste their URLs here.
+          </p>
+
+          <div class="form-group">
+            <label for="header_logo_url">Header Logo Image URL</label>
+            <input type="text" id="header_logo_url" name="header_logo_url" class="form-control" placeholder="https://..." value="<%= settings.header_logo_url || '' %>" style="border-radius: 8px;">
+          </div>
+          
+          <div class="form-group" style="margin-top: 1.5rem; margin-bottom: 0;">
+            <label for="footer_logo_url">Footer Logo Image URL</label>
+            <input type="text" id="footer_logo_url" name="footer_logo_url" class="form-control" placeholder="https://..." value="<%= settings.footer_logo_url || '' %>" style="border-radius: 8px;">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
+      <!-- Right Card 1: Default CTA Configuration -->
+      <div class="card" style="border-radius: 16px;">
+        <div class="card-header" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+          <span>Global Sourcing CTA Configuration</span>
+        </div>
+        <div class="card-body" style="padding: 2rem;">
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.75rem; line-height: 1.45;">
+            Customize the main call-to-action blocks that appear at the bottom of blog articles to maximize lead generation.
+          </p>
+
+          <div class="form-group">
+            <label for="cta_title">CTA Header Title</label>
+            <input type="text" id="cta_title" name="cta_title" class="form-control" placeholder="Looking for a product from China?" value="<%= (settings.default_cta ? settings.default_cta.title : '') || '' %>" required style="border-radius: 8px;">
+          </div>
+          
+          <div class="form-group">
+            <label for="cta_subtitle">CTA Subtitle Description</label>
+            <textarea id="cta_subtitle" name="cta_subtitle" class="form-control" placeholder="Submit your requirements and explore sourcing opportunities with Importerr." rows="3" required style="border-radius: 8px; line-height: 1.45;"><%= (settings.default_cta ? settings.default_cta.subtitle : '') || '' %></textarea>
+          </div>
+          
+          <div class="form-row" style="margin-bottom: 0;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="cta_btn_text">Button Label</label>
+              <input type="text" id="cta_btn_text" name="cta_btn_text" class="form-control" placeholder="Submit Your Requirement" value="<%= (settings.default_cta ? settings.default_cta.buttonText : '') || '' %>" required style="border-radius: 8px;">
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="cta_btn_url">Button Action URL</label>
+              <input type="text" id="cta_btn_url" name="cta_btn_url" class="form-control" placeholder="#consultationFlow" value="<%= (settings.default_cta ? settings.default_cta.buttonUrl : '') || '' %>" required style="border-radius: 8px;">
+              <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 0.25rem;">Use relative routes, hashes, or full URLs.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Navigation Menu Settings -->
+  <div class="card" style="margin-top: 2rem; border-radius: 16px;">
+    <div class="card-header" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+      <span>Navigation Menus Configuration</span>
+    </div>
+    <div class="card-body" style="padding: 2rem;">
+      <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.75rem; line-height: 1.45;">
+        Configure custom navigation links for the main site header and footer. Blank rows will be automatically ignored upon saving.
+      </p>
+
+      <div class="editor-layout" style="grid-template-columns: 1fr 1fr; gap: 2rem; padding: 0; box-shadow: none; background: transparent; border: none; margin-bottom: 0;">
+        <!-- Header Navigation Links -->
+        <div>
+          <h3 style="font-size: 0.9rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-main);">
+            Header Links (Max 6)
+          </h3>
+          <% for (let i = 0; i < 6; i++) { %>
+            <% const link = (settings.header_links && settings.header_links[i]) ? settings.header_links[i] : { label: '', url: '' }; %>
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
+              <input type="text" name="header_label" class="form-control" placeholder="Label (e.g. Home)" value="<%= link.label %>" style="border-radius: 8px; flex: 1;">
+              <input type="text" name="header_url" class="form-control" placeholder="Target URL (e.g. /blog)" value="<%= link.url %>" style="border-radius: 8px; flex: 1.5;">
+            </div>
+          <% } %>
+        </div>
+
+        <!-- Footer Navigation Links -->
+        <div>
+          <h3 style="font-size: 0.9rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-main);">
+            Footer Links (Max 6)
+          </h3>
+          <% for (let i = 0; i < 6; i++) { %>
+            <% const link = (settings.footer_links && settings.footer_links[i]) ? settings.footer_links[i] : { label: '', url: '' }; %>
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
+              <input type="text" name="footer_label" class="form-control" placeholder="Label (e.g. Privacy)" value="<%= link.label %>" style="border-radius: 8px; flex: 1;">
+              <input type="text" name="footer_url" class="form-control" placeholder="Target URL (e.g. /privacy)" value="<%= link.url %>" style="border-radius: 8px; flex: 1.5;">
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top: 1.5rem; border-radius: 16px;">
+    <div class="card-body" style="text-align: right; padding: 1.25rem 2rem;">
+      <button type="submit" class="btn btn-primary" style="padding: 0.85rem 2.5rem; border-radius: 20px;">
+        Save Settings Config
+      </button>
+    </div>
+  </div>
+</form>
+
+<%- include('layout/footer') %>

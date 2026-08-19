@@ -1,0 +1,92 @@
+<%- include('../layout/header') %>
+
+<main class="section-wrapper" style="padding-top: 3rem; padding-bottom: 5rem;">
+  
+  <!-- Breadcrumbs -->
+  <nav class="breadcrumbs-nav">
+    <a href="/">Home</a>
+    <span>&rarr;</span>
+    <a href="/blog">Blog</a>
+    <span>&rarr;</span>
+    <span style="color: var(--text-muted);"><%= archiveTitle %></span>
+  </nav>
+
+  <!-- Header Title -->
+  <header style="margin-bottom: 3rem;">
+    <% if (archiveType === 'author' && authorInfo) { %>
+      <!-- Author bio details card for author archives -->
+      <div class="author-bio-section" style="margin: 0; border: 1px solid var(--border-subtle); border-radius: 12px; padding: 2rem; background: var(--bg-card);">
+        <img src="<%= authorInfo.photo %>" alt="<%= authorInfo.name %>" class="author-bio-avatar" style="width: 100px; height: 100px;">
+        <div class="author-bio-details">
+          <span class="author-bio-title">Author Profile</span>
+          <h1 style="font-size: 2rem; margin-bottom: 0.5rem;"><%= authorInfo.name %></h1>
+          <p style="color: var(--text-muted); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.75rem;"><%= authorInfo.designation %></p>
+          <p class="author-bio-text" style="margin-bottom: 1rem;"><%= authorInfo.bio %></p>
+          <div class="author-social-links">
+            <% if (authorInfo.social && authorInfo.social.linkedin) { %>
+              <a href="<%= authorInfo.social.linkedin %>" target="_blank">LinkedIn &rarr;</a>
+            <% } %>
+            <% if (authorInfo.social && authorInfo.social.twitter) { %>
+              <a href="<%= authorInfo.social.twitter %>" target="_blank">Twitter &rarr;</a>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    <% } else if (archiveType === 'category' && categoryInfo) { %>
+      <!-- Category details for category archives -->
+      <span class="meta-tag">Category Archive</span>
+      <h1 style="font-size: 2.75rem; line-height: 1.15; margin-bottom: 0.5rem; letter-spacing: -0.03em;"><%= categoryInfo.name %></h1>
+      <p style="font-size: 1.1rem; color: var(--text-sub); max-width: 700px;"><%= categoryInfo.description %></p>
+    <% } else if (archiveType === 'tag') { %>
+      <span class="meta-tag">Tag Archive</span>
+      <h1 style="font-size: 2.75rem; line-height: 1.15; margin-bottom: 0.5rem; letter-spacing: -0.03em;">Tag: #<%= archiveTitle %></h1>
+    <% } else if (archiveType === 'search') { %>
+      <span class="meta-tag">Search Results</span>
+      <h1 style="font-size: 2.5rem; line-height: 1.2; margin-bottom: 0.5rem; letter-spacing: -0.03em;">Search results for: "<%= query %>"</h1>
+      <p class="results-header-tag">We found <%= articles.length %> articles matching your search query.</p>
+    <% } %>
+  </header>
+
+  <!-- Articles Grid -->
+  <section class="article-grid-section">
+    <% if (articles.length === 0) { %>
+      <div class="empty-state-wrap">
+        <h3 class="empty-state-title">No articles found</h3>
+        <p class="empty-state-desc">We couldn't find any articles matching this classification. Try looking up something else or browse the homepage guides.</p>
+        <a href="/blog" class="btn btn-primary" style="display: inline-flex; margin-top: 1rem;">Back to Blog Home</a>
+      </div>
+    <% } else { %>
+      <div class="article-grid">
+        <% articles.forEach(art => { %>
+          <article class="article-card">
+            <div class="article-img-wrap">
+              <a href="/blog/<%= art.slug %>">
+                <img src="<%= art.featuredImage %>" alt="<%= art.title %>" class="article-img" loading="lazy">
+              </a>
+            </div>
+            <div class="article-body">
+              <span class="meta-tag"><%= art.categoryName %></span>
+              <h3 class="article-title">
+                <a href="/blog/<%= art.slug %>"><%= art.title %></a>
+              </h3>
+              <p class="article-excerpt"><%= art.excerpt %></p>
+              
+              <div class="card-author-row">
+                <img src="<%= art.authorPhoto %>" alt="<%= art.authorName %>" class="card-author-img">
+                <div class="card-author-meta">
+                  <span class="card-author-name">By <a href="/blog/author/<%= art.authorSlug %>"><%= art.authorName %></a></span>
+                  <div class="post-date-read">
+                    <%= art.formattedPublishDate %> &bull; <%= art.readingTime %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+    <% } %>
+  </section>
+
+</main>
+
+<%- include('../layout/footer') %>

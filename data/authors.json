@@ -1,0 +1,14 @@
+[
+  {
+    "id": "auth_1",
+    "name": "Vipin Kumar",
+    "slug": "vipin-kumar",
+    "designation": "China Sourcing Expert",
+    "photo": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80",
+    "bio": "Vipin is the founder of Importerr. He has 15+ years of hands-on experience helping Indian e-commerce brands, Amazon sellers, and corporate importers verify Chinese suppliers and streamline sea and air shipping door-to-door.",
+    "social": {
+      "linkedin": "https://linkedin.com/in/vipin-kumar-importerr",
+      "twitter": "https://twitter.com/vipin_importerr"
+    }
+  }
+]

@@ -1,0 +1,48 @@
+{
+  "google_analytics_id": "",
+  "google_tag_manager_id": "",
+  "default_cta": {
+    "title": "Looking for a product from China?",
+    "subtitle": "Submit your requirements and explore sourcing opportunities with Importerr.",
+    "buttonText": "Submit Your Requirement",
+    "buttonUrl": "#consultationFlow"
+  },
+  "header_links": [
+    {
+      "label": "Blog Home",
+      "url": "/blog"
+    },
+    {
+      "label": "China Sourcing",
+      "url": "/blog/category/china-sourcing"
+    },
+    {
+      "label": "Importing Guides",
+      "url": "/blog/category/importing-guides"
+    },
+    {
+      "label": "E-commerce Brands",
+      "url": "/blog/category/ecommerce-brands"
+    }
+  ],
+  "footer_links": [
+    {
+      "label": "Home",
+      "url": "/blog"
+    },
+    {
+      "label": "Main Website",
+      "url": "https://www.importerr.com/"
+    },
+    {
+      "label": "Sourcing Consultation",
+      "url": "https://www.importerr.com/#consultationFlow"
+    },
+    {
+      "label": "Privacy Policy",
+      "url": "https://www.importerr.com/privacy"
+    }
+  ],
+  "header_logo_url": "https://www.importerr.com/static/media/comimport.3838f084f6791c3ea895.png",
+  "footer_logo_url": ""
+}

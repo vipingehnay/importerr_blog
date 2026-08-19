@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS Admin Login | Importerr</title>
+  <link rel="stylesheet" href="/css/admin.css">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #FAF9F5 0%, #EEF2F6 100%);
+      min-height: 100vh;
+      margin: 0;
+    }
+    .login-container {
+      background: #FFFFFF;
+      border: 1px solid rgba(15, 23, 42, 0.04);
+      border-radius: 20px;
+      padding: 4rem 3rem;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.02);
+      transition: var(--transition-smooth);
+    }
+    .login-container:hover {
+      box-shadow: 0 30px 60px -15px rgba(15, 23, 42, 0.12);
+    }
+  </style>
+</head>
+<body class="admin-body">
+
+  <div class="login-container">
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+      <img src="https://www.importerr.com/static/media/comimport.3838f084f6791c3ea895.png" alt="Importerr Logo" style="height: 38px; object-fit: contain; margin-bottom: 0.75rem;">
+      <div style="display: flex; flex-direction: column; align-items: center;">
+        <span style="font-size: 1.15rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em;">Importerr Sourcing</span>
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-brand); letter-spacing: 0.06em; margin-top: 0.15rem;">Blog CMS Panel</span>
+      </div>
+    </div>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="login-error" style="border-radius: 10px; padding: 0.75rem 1rem; font-size: 0.82rem; margin-bottom: 1.75rem; border: 1px solid rgba(220, 38, 38, 0.12); background: rgba(220, 38, 38, 0.05); color: var(--color-red); font-weight: 700; text-align: center;">
+        <%= error %>
+      </div>
+    <% } %>
+
+    <form action="/blog/admin/login" method="POST">
+      <div class="form-group" style="margin-bottom: 1.75rem;">
+        <label for="password" style="font-weight: 700; font-size: 0.85rem; color: var(--text-sub); display: block; margin-bottom: 0.5rem; text-align: center;">Administrator Password</label>
+        <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required autofocus style="text-align: center; font-size: 1.25rem; letter-spacing: 0.25em; border-radius: 10px; padding: 0.8rem 1rem;">
+      </div>
+      
+      <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 0.95rem; border-radius: 25px; margin-top: 0.5rem;">
+        Authenticate Securely
+      </button>
+    </form>
+  </div>
+
+</body>
+</html>

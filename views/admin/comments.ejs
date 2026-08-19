@@ -1,0 +1,137 @@
+<%- include('layout/header') %>
+
+<div class="admin-header-row" style="margin-bottom: 2.5rem;">
+  <div>
+    <h1 class="admin-page-title">Moderate Comments</h1>
+    <p style="color: var(--text-sub); margin-top: 0.25rem;">Review reader feedback and manage comment approvals to maintain editorial quality.</p>
+  </div>
+</div>
+
+<!-- Filters Bar -->
+<div class="card" style="margin-bottom: 2rem; border-radius: 12px;">
+  <div class="card-body" style="padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      <a href="/blog/admin/comments" class="filter-btn <%= !statusFilter ? 'active' : '' %>" style="border-radius: 20px; font-size: 0.8rem; padding: 0.45rem 1.15rem;">All</a>
+      <a href="/blog/admin/comments?status=pending" class="filter-btn <%= statusFilter === 'pending' ? 'active' : '' %>" style="border-radius: 20px; font-size: 0.8rem; padding: 0.45rem 1.15rem;">Pending</a>
+      <a href="/blog/admin/comments?status=approved" class="filter-btn <%= statusFilter === 'approved' ? 'active' : '' %>" style="border-radius: 20px; font-size: 0.8rem; padding: 0.45rem 1.15rem;">Approved</a>
+      <a href="/blog/admin/comments?status=spam" class="filter-btn <%= statusFilter === 'spam' ? 'active' : '' %>" style="border-radius: 20px; font-size: 0.8rem; padding: 0.45rem 1.15rem;">Spam</a>
+    </div>
+    
+    <div>
+      <form action="/blog/admin/comments" method="GET" style="display: flex; gap: 0.5rem; align-items: center;">
+        <% if (statusFilter) { %>
+          <input type="hidden" name="status" value="<%= statusFilter %>">
+        <% } %>
+        <input type="text" name="search" placeholder="Search author, email, content..." value="<%= searchVal || '' %>" class="form-control" style="padding: 0.45rem 1rem; font-size: 0.82rem; width: 220px; border-radius: 20px; background: #FFFFFF; box-shadow: var(--shadow-sm);">
+        
+        <select name="date" class="form-control" style="padding: 0.45rem 1.75rem 0.45rem 1rem; font-size: 0.82rem; border-radius: 20px; background: #FFFFFF; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); width: 150px; cursor: pointer; outline: none;">
+          <option value="">All dates</option>
+          <% availableMonths.forEach(m => { %>
+            <option value="<%= m.value %>" <%= dateFilter === m.value ? 'selected' : '' %>><%= m.label %></option>
+          <% }) %>
+        </select>
+
+        <button type="submit" class="btn btn-secondary" style="padding: 0.45rem 1.15rem; font-size: 0.82rem; border-radius: 20px;">Filter</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Comments Table -->
+<div class="card" style="border-radius: 16px;">
+  <div class="card-body" style="padding: 0;">
+    <% if (comments.length === 0) { %>
+      <div style="padding: 5rem 2rem; text-align: center; color: var(--text-muted);">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); margin-bottom: 0.75rem;">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <p style="font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.25rem;">No comments found</p>
+        <p style="font-size: 0.85rem; margin-bottom: 1.25rem;">Comments submitted by readers will appear here for review.</p>
+        <a href="/blog/admin/comments" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.5rem 1.25rem; border-radius: 20px;">Clear Filters</a>
+      </div>
+    <% } else { %>
+      <form action="/blog/admin/comments/bulk" method="POST" onsubmit="return confirmBulkAction(this);">
+        <div style="padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; gap: 0.5rem; background: #FAF9F6;">
+          <select name="action" class="form-control" style="width: 150px; font-size: 0.8rem; border-radius: 20px; padding: 0.35rem 0.75rem; border: 1px solid var(--border-light); height: auto; outline: none; cursor: pointer;" required>
+            <option value="">Bulk Actions</option>
+            <option value="approve">Approve</option>
+            <option value="spam">Mark Spam</option>
+            <option value="delete">Delete Selected</option>
+          </select>
+          <button type="submit" class="btn btn-secondary" style="padding: 0.35rem 1rem; font-size: 0.8rem; border-radius: 20px; font-weight: 700;">Apply</button>
+        </div>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th style="width: 40px; text-align: center; padding-left: 1.25rem;">
+                <input type="checkbox" class="select-all-checkbox" style="cursor: pointer; width: 14px; height: 14px;">
+              </th>
+              <th>Author Details</th>
+              <th>Article Target</th>
+              <th>Comment Content</th>
+              <th>Status</th>
+              <th>Submitted At</th>
+              <th style="text-align: right; width: 260px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% comments.forEach(comment => { %>
+              <tr>
+                <td style="text-align: center; vertical-align: top; padding-top: 1.25rem; padding-left: 1.25rem;">
+                  <input type="checkbox" name="ids" value="<%= comment.id %>" class="row-checkbox" style="cursor: pointer; width: 14px; height: 14px;">
+                </td>
+                <td style="vertical-align: top; padding-top: 1.25rem;">
+                  <div style="font-weight: 700; color: var(--text-main);"><%= comment.authorName %></div>
+                  <div style="font-size: 0.78rem; color: var(--text-muted); font-family: monospace; margin-top: 0.15rem;"><%= comment.authorEmail %></div>
+                </td>
+                <td style="vertical-align: top; padding-top: 1.25rem; font-weight: 600;">
+                  <a href="/blog/<%= comment.articleSlug %>" target="_blank" style="color: var(--color-blue); text-decoration: underline;">
+                    <%= comment.articleTitle %>
+                  </a>
+                </td>
+                <td style="vertical-align: top; padding-top: 1.25rem; max-width: 350px; font-size: 0.85rem; line-height: 1.45; color: var(--text-sub); word-break: break-word;">
+                  <%= comment.content %>
+                </td>
+                <td style="vertical-align: top; padding-top: 1.25rem;">
+                  <% if (comment.status === 'approved') { %>
+                    <span class="badge badge-published">Approved</span>
+                  <% } else if (comment.status === 'spam') { %>
+                    <span class="badge badge-archived">Spam</span>
+                  <% } else { %>
+                    <span class="badge badge-scheduled">Pending</span>
+                  <% } %>
+                </td>
+                <td style="vertical-align: top; padding-top: 1.25rem; font-size: 0.82rem; color: var(--text-muted); font-weight: 500;">
+                  <%= new Date(comment.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %>
+                </td>
+                <td style="text-align: right; vertical-align: top; padding-top: 1.1rem;">
+                  <div style="display: inline-flex; gap: 0.25rem; align-items: center; justify-content: flex-end;">
+                    
+                    <% if (comment.status !== 'approved') { %>
+                      <form action="/blog/admin/comments/approve/<%= comment.id %>" method="POST" style="display: inline;">
+                        <button type="submit" class="btn btn-secondary" style="padding: 0.4rem 0.75rem; font-size: 0.75rem; border-radius: 6px; color: var(--badge-pub-txt); border-color: var(--badge-pub-border); background: var(--badge-pub-bg);">Approve</button>
+                      </form>
+                    <% } %>
+                    
+                    <% if (comment.status !== 'spam') { %>
+                      <form action="/blog/admin/comments/spam/<%= comment.id %>" method="POST" style="display: inline;">
+                        <button type="submit" class="btn btn-secondary" style="padding: 0.4rem 0.75rem; font-size: 0.75rem; border-radius: 6px; color: var(--badge-sched-txt); border-color: var(--badge-sched-border); background: var(--badge-sched-bg);">Mark Spam</button>
+                      </form>
+                    <% } %>
+                    
+                    <form action="/blog/admin/comments/delete/<%= comment.id %>" method="POST" style="display: inline;" data-confirm="Are you sure you want to delete this comment permanently?">
+                      <button type="submit" class="btn btn-danger" style="padding: 0.4rem 0.75rem; font-size: 0.75rem; border-radius: 6px;">Delete</button>
+                    </form>
+                    
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </form>
+    <% } %>
+  </div>
+</div>
+
+<%- include('layout/footer') %>

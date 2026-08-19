@@ -1,0 +1,178 @@
+  <!-- Newsletter Subscription Widget -->
+  <section class="newsletter-subscription-section" style="background: linear-gradient(135deg, #111111 0%, #1c1c1c 100%); color: #FFFFFF; padding: 4.5rem 2rem; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; position: relative; overflow: hidden; margin-top: 0;">
+    <!-- Abstract subtle blue glow design backgrounds -->
+    <div style="position: absolute; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(0, 85, 255, 0.08) 0%, rgba(0, 85, 255, 0) 70%); top: -100px; left: -100px; pointer-events: none;"></div>
+    <div style="position: absolute; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(0, 85, 255, 0.06) 0%, rgba(0, 85, 255, 0) 70%); bottom: -150px; right: -150px; pointer-events: none;"></div>
+
+    <div style="max-width: 600px; margin: 0 auto; position: relative; z-index: 1;">
+      <span style="color: var(--color-brand); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.15em; display: inline-block; margin-bottom: 0.75rem;">Join 10,000+ Importers</span>
+      <h2 style="font-family: 'Inter Tight', sans-serif; font-size: 1.85rem; font-weight: 800; letter-spacing: -0.03em; margin: 0 0 0.5rem 0; color: #FFFFFF;">Stay ahead in China Sourcing & Logistics</h2>
+      <p style="color: rgba(255,255,255,0.65); font-size: 1rem; line-height: 1.5; margin: 0 0 2rem 0;">Get custom clearance tips, supply chain negotiation blueprints, and industry tariff updates directly in your inbox twice a week.</p>
+
+      <form id="newsletter-form" action="/blog/subscribe" method="POST" style="display: flex; gap: 0.75rem; justify-content: center; max-width: 480px; margin: 0 auto; flex-wrap: wrap;">
+        <input type="email" name="email" id="newsletter-email" class="newsletter-field-input" placeholder="Enter your business email" required>
+        <button type="submit" class="newsletter-submit-button">
+          Subscribe
+        </button>
+      </form>
+      <div id="newsletter-feedback" style="margin-top: 1.25rem; font-size: 0.9rem; font-weight: 700; display: none;"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="web_footer_bg">
+      <div class="web_footer_row">
+        <div class="web_footer_col web_footer_col_one">
+          <div class="web_footer_col_one_text">
+            <a class="footer_logo" href="/blog">
+              <img src="<%= (typeof globalSettings !== 'undefined' && globalSettings.footer_logo_url) ? globalSettings.footer_logo_url : 'https://www.importerr.com/static/media/comimport.3838f084f6791c3ea895.png' %>" alt="Importerr Logo">
+            </a>
+            <p class="web_footer_col_para">Importerr is India’s first AI-powered B2B cross-border sourcing platform</p>
+            <a class="footer_view_more_btn" href="https://www.importerr.com/about-us" target="_blank">
+              View More 
+              <span>
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                  <polyline fill="none" stroke-width="2" points="9 6 15 12 9 18"></polyline>
+                </svg>
+              </span>
+            </a>
+          </div>
+          <div class="social_media_row">
+            <a rel="noopener noreferrer" aria-label="Follow us on LinkedIn" href="https://www.linkedin.com/company/importerr/?viewAsMember=true" target="_blank">
+              <div>
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z"></path>
+                </svg>
+              </div>
+            </a>
+            <a rel="noopener noreferrer" aria-label="Follow us on Facebook" href="https://www.facebook.com/profile.php?id=61581809109299" target="_blank">
+              <div>
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 320 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z"></path>
+                </svg>
+              </div>
+            </a>
+            <a rel="noopener noreferrer" aria-label="Follow us on Instagram" href="https://www.instagram.com/importerr_?igsh=MWZiaG1lYW92dXJtaw==" target="_blank">
+              <div>
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"></path>
+                </svg>
+              </div>
+            </a>
+            <a rel="noopener noreferrer" aria-label="Follow us on YouTube" href="https://youtube.com/@importerr?si=esZRhh9T-SsbiCbP" target="_blank">
+              <div>
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 576 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"></path>
+                </svg>
+              </div>
+            </a>
+          </div>
+        </div>
+        
+        <div class="web_footer_col web_footer_col_two">
+          <h2 class="web_footer_col_head">Connect With Us</h2>
+          <div class="office-info-section">
+            <p class="office-timings-text">Office Timings - 09:00 AM to 6:00 PM</p>
+            <p class="office-days-text">Monday - Saturday</p>
+          </div>
+          <a class="web_footer_link" href="mailto:contact@importerr.com">
+            <div>
+              <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                <path d="M928 160H96c-17.7 0-32 14.3-32 32v640c0 17.7 14.3 32 32 32h832c17.7 0 32-14.3 32-32V192c0-17.7-14.3-32-32-32zm-40 110.8V792H136V270.8l-27.6-21.5 39.3-50.5 42.8 33.3h643.1l42.8-33.3 39.3 50.5-27.7 21.5zM833.6 232L512 482 190.4 232l-42.8-33.3-39.3 50.5 27.6 21.5 341.6 265.6a55.99 55.99 0 0 0 68.7 0L888 270.8l27.6-21.5-39.3-50.5-42.7 33.2z"></path>
+              </svg>
+            </div>
+            <span class="contact-bold-text">contact@importerr.com</span>
+          </a>
+          <a class="web_footer_link" href="tel:+917428574082" target="_blank">
+            <div>
+              <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                <path fill="none" d="M0 0h24v24H0V0z"></path>
+                <path d="M20 15.45c-1.25 0-2.45-.2-3.57-.57-.1-.03-.21-.05-.31-.05-.26 0-.51.1-.71.29l-2.2 2.2a15.045 15.045 0 0 1-6.59-6.59l2.2-2.21a.96.96 0 0 0 .25-1 11.36 11.36 0 0 1-.57-3.57c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1zM5.03 4.95h1.5c.07.88.22 1.75.45 2.58l-1.2 1.21c-.4-1.21-.66-2.47-.75-3.79zM19 18.92c-1.32-.09-2.6-.35-3.8-.76l1.2-1.2c.85.24 1.72.39 2.6.45v1.51zM18 5.95v-3h-2v3h-3v2h3v3h2v-3h3v-2z"></path>
+              </svg>
+            </div>
+            <span class="contact-bold-text">+91 7428574082</span>
+          </a>
+          <a class="web_footer_link" href="tel:+919311380613" target="_blank">
+            <div>
+              <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                <path fill="none" d="M0 0h24v24H0V0z"></path>
+                <path d="M20 15.45c-1.25 0-2.45-.2-3.57-.57-.1-.03-.21-.05-.31-.05-.26 0-.51.1-.71.29l-2.2 2.2a15.045 15.045 0 0 1-6.59-6.59l2.2-2.21a.96.96 0 0 0 .25-1 11.36 11.36 0 0 1-.57-3.57c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1zM5.03 4.95h1.5c.07.88.22 1.75.45 2.58l-1.2 1.21c-.4-1.21-.66-2.47-.75-3.79zM19 18.92c-1.32-.09-2.6-.35-3.8-.76l1.2-1.2c.85.24 1.72.39 2.6.45v1.51zM18 5.95v-3h-2v3h-3v2h3v3h2v-3h3v-2z"></path>
+              </svg>
+            </div>
+            <span class="contact-bold-text">+91 9311380613</span>
+          </a>
+        </div>
+        
+        <div class="web_footer_col">
+          <h2 class="web_footer_col_head">How It Works</h2>
+          <a class="web_footer_link" href="https://www.importerr.com/how-dropshiping-work" target="_blank">How Importerr Works</a>
+          <a class="web_footer_link" href="https://www.importerr.com/why-work-with-importerr" target="_blank">Why work with us</a>
+          <a class="web_footer_link" href="https://www.importerr.com/" target="_blank">Our Process</a>
+          <a class="web_footer_link" href="https://www.importerr.com/api-integration" target="_blank">APIs Integration</a>
+        </div>
+        
+        <div class="web_footer_col">
+          <h2 class="web_footer_col_head">Get To Know Us</h2>
+          <a class="web_footer_link" href="https://www.importerr.com/about-us" target="_blank">About Us</a>
+          <a class="web_footer_link" href="https://www.importerr.com/contact-us" target="_blank">Contact Us</a>
+          <a class="web_footer_link" href="https://www.importerr.com/privacy-policy" target="_blank">Privacy Policy</a>
+          <a class="web_footer_link" href="https://www.importerr.com/cookies-policy" target="_blank">Cookies Policy</a>
+          <a class="web_footer_link" href="https://www.importerr.com/shipping-policy" target="_blank">Shipping Policy</a>
+          <a class="web_footer_link" href="https://www.importerr.com/return-refund-policy" target="_blank">Return &amp; Refund Policy</a>
+          <a class="web_footer_link" href="https://www.importerr.com/cancel-policy" target="_blank">Cancel Policy</a>
+          <a class="web_footer_link" href="https://www.importerr.com/terms-and-conditions" target="_blank">Terms Of Service</a>
+        </div>
+        
+        <div class="web_footer_col">
+          <h2 class="web_footer_col_head">Quick Links</h2>
+          <a class="web_footer_link" href="https://www.importerr.com/seller/dashboard" target="_blank">Your Account</a>
+          <a class="web_footer_link" href="https://www.importerr.com/help-center" target="_blank">Help</a>
+          <a class="web_footer_link" href="https://www.importerr.com/partner-with-us" target="_blank">Become Partner</a>
+          <a class="web_footer_link web_footer_blue_link" href="https://www.importerr.com/signup?affiliate=1" target="_blank">Become Affiliate</a>
+        </div>
+      </div>
+      
+      <div class="web_footer_row_two">
+        <p>© 2025, (Boundless Trends Private Limited) Importerr All rights reserved.</p>
+        <div class="partners_and_payments">
+          <span class="partners_text">Our Partners</span>
+          <div class="payment_cards_row">
+            <div class="payment_cards_img_container">
+              <img src="https://www.importerr.com/static/media/one.eafc4275d38264cc8052.webp" alt="Amazon">
+            </div>
+            <div class="payment_cards_img_container">
+              <img src="https://www.importerr.com/static/media/two.d29359a1e8724f2001bb.webp" alt="Shopify">
+            </div>
+            <div class="payment_cards_img_container">
+              <img src="https://www.importerr.com/static/media/five.cb64ae626c443ef8bf87.webp" alt="Shiprocket">
+            </div>
+            <div class="payment_cards_img_container">
+              <img src="https://www.importerr.com/static/media/rupay.cb9459ae1de22a65cb3d.webp" alt="Rupay">
+            </div>
+            <div class="payment_cards_img_container">
+              <img src="https://www.importerr.com/static/media/visa.42b8c618be0de276a1fe.webp" alt="Visa">
+            </div>
+            <div class="payment_cards_img_container">
+              <img src="https://www.importerr.com/static/media/maestro.3506bd8c790226d9121f.webp" alt="Maestro">
+            </div>
+            <div class="payment_cards_img_container">
+              <img src="https://www.importerr.com/static/media/master_card.c1b8d0d505d8d7c2473f.webp" alt="MasterCard">
+            </div>
+            <div class="payment_cards_img_container">
+              <img src="https://www.importerr.com/static/media/upi.ad21e0d2c89eabf74489.webp" alt="UPI">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification (for copy link prompts etc) -->
+  <div id="blog-toast" class="toast-msg">Link copied to clipboard!</div>
+
+  <!-- Client-side Interaction JavaScript -->
+  <script src="/js/blog.js"></script>
+
+</body>
+</html>

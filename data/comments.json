@@ -1,0 +1,24 @@
+[
+  {
+    "id": "com_2",
+    "articleId": "art_1",
+    "articleTitle": "How to Import Products from China: The Ultimate Guide for Indian E-commerce Brands",
+    "articleSlug": "how-to-import-products-from-china",
+    "authorName": "Ananya Sen",
+    "authorEmail": "ananya.shopify@gmail.com",
+    "content": "Great article, Vipin! I've been running an e-commerce shop for 3 years and verified supplier checks are always the scariest part. Do you offer container consolidation services at Chinese ports (e.g. Ningbo or Shenzhen)?",
+    "status": "approved",
+    "createdAt": "2026-08-11T10:30:00.000Z"
+  },
+  {
+    "id": "com_1",
+    "articleId": "art_1",
+    "articleTitle": "How to Import Products from China: The Ultimate Guide for Indian E-commerce Brands",
+    "articleSlug": "how-to-import-products-from-china",
+    "authorName": "Rajesh Nair",
+    "authorEmail": "rajesh@nairlogistics.in",
+    "content": "This is by far the most detailed guide on importing to India. The breakdown of customs duty calculations (BCD, SWS, IGST) is extremely accurate. Sourcing directly from factories using verified business license scopes has saved our D2C brand from middlemen markups. Looking forward to more content on custom clearance rules for electrical goods!",
+    "status": "approved",
+    "createdAt": "2026-08-11T09:12:00.000Z"
+  }
+]

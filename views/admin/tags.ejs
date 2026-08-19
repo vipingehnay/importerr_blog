@@ -1,0 +1,168 @@
+<%- include('layout/header') %>
+
+<div class="admin-header-row" style="margin-bottom: 2.5rem;">
+  <div>
+    <h1 class="admin-page-title">Manage Tags</h1>
+    <p style="color: var(--text-sub); margin-top: 0.25rem;">Create, edit, or remove article metadata tags to group granular topics.</p>
+  </div>
+</div>
+
+<div class="editor-layout" style="grid-template-columns: 1fr 360px; gap: 2rem;">
+  
+  <!-- Tags List (Left Column) -->
+  <div class="card" style="border-radius: 16px;">
+    <div class="card-header" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+      <span>Tag List</span>
+    </div>
+    <div class="card-body" style="padding: 0;">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Slug Route</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th style="text-align: right; width: 160px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% tags.forEach(tag => { %>
+            <tr>
+              <td style="font-weight: 700; color: var(--text-main);">#<%= tag.name %></td>
+              <td><code style="background: var(--bg-admin); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; border: 1px solid var(--border-light);">/blog/tag/<%= tag.slug %></code></td>
+              <td style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.45;"><%= tag.description || 'No description provided' %></td>
+              <td>
+                <% if (tag.status === 'active') { %>
+                  <span class="badge badge-published">Active</span>
+                <% } else if (tag.status === 'noindex') { %>
+                  <span class="badge badge-scheduled">Noindex</span>
+                <% } else { %>
+                  <span class="badge badge-draft">Archived</span>
+                <% } %>
+              </td>
+              <td style="text-align: right; vertical-align: middle;">
+                <div style="display: inline-flex; gap: 0.35rem; justify-content: flex-end; align-items: center;">
+                  <button type="button" class="btn btn-secondary edit-tag-btn" style="padding: 0.4rem 0.75rem; font-size: 0.75rem; border-radius: 6px;" 
+                          data-id="<%= tag.id %>"
+                          data-name="<%= tag.name %>"
+                          data-slug="<%= tag.slug %>"
+                          data-desc="<%= tag.description || '' %>"
+                          data-status="<%= tag.status %>">
+                    Edit
+                  </button>
+                  <form action="/blog/admin/tags/delete/<%= tag.id %>" method="POST" style="display: inline;" data-confirm="Are you sure you want to delete this tag? Current articles will be unassigned.">
+                    <button type="submit" class="btn btn-danger" style="padding: 0.4rem 0.75rem; font-size: 0.75rem; border-radius: 6px;">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Create/Edit Form (Right Column Sidebar Card) -->
+  <div class="card" style="border-radius: 16px; height: fit-content; position: sticky; top: 100px;">
+    <div class="card-header" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+      <span id="form-header-title">Create Tag</span>
+    </div>
+    <div class="card-body" style="padding: 1.5rem;">
+      <form action="/blog/admin/tags/create" method="POST" id="tag-form">
+        <input type="hidden" name="id" id="tag-id">
+        
+        <div class="form-group">
+          <label for="tag-name">Tag Name</label>
+          <input type="text" id="tag-name" name="name" class="form-control" placeholder="e.g. Alibaba Sourcing" required style="border-radius: 8px;">
+        </div>
+        
+        <div class="form-group">
+          <label for="tag-slug">URL Slug</label>
+          <input type="text" id="tag-slug" name="slug" class="form-control" placeholder="alibaba-sourcing" required style="border-radius: 8px; background: #FAFAFA;">
+        </div>
+        
+        <div class="form-group">
+          <label for="tag-desc">Description (Optional)</label>
+          <textarea id="tag-desc" name="description" class="form-control" placeholder="Brief summary of what this tag signifies..." rows="3" style="border-radius: 8px; line-height: 1.45;"></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="tag-status">Status</label>
+          <select id="tag-status" name="status" class="form-control" style="border-radius: 8px;">
+            <option value="active">Active (Indexable)</option>
+            <option value="noindex">Noindex (Low SEO Value)</option>
+            <option value="archived">Archived / Hidden</option>
+          </select>
+        </div>
+
+        <div style="margin-top: 1.75rem; display: flex; flex-direction: column; gap: 0.5rem;">
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; border-radius: 20px;">
+            Save Tag
+          </button>
+          <button type="button" id="reset-form-btn" class="btn btn-secondary" style="width: 100%; padding: 0.75rem; border-radius: 20px; display: none; justify-content: center; align-items: center;">
+            Clear & Create New
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const editBtns = document.querySelectorAll('.edit-tag-btn');
+    const form = document.getElementById('tag-form');
+    const formTitle = document.getElementById('form-header-title');
+    const resetBtn = document.getElementById('reset-form-btn');
+    
+    const inputId = document.getElementById('tag-id');
+    const inputName = document.getElementById('tag-name');
+    const inputSlug = document.getElementById('tag-slug');
+    const inputDesc = document.getElementById('tag-desc');
+    const inputStatus = document.getElementById('tag-status');
+
+    // Name-to-Slug auto filler
+    inputName.addEventListener('input', () => {
+      if (!inputId.value) { // Only auto-fill on creation
+        inputSlug.value = inputName.value
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .replace(/\s+/g, '-');
+      }
+    });
+
+    editBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Change form action to update
+        form.action = `/blog/admin/tags/update/${btn.dataset.id}`;
+        formTitle.textContent = `Edit Tag: ${btn.dataset.name}`;
+        resetBtn.style.display = 'inline-flex';
+        
+        // Populate inputs
+        inputId.value = btn.dataset.id;
+        inputName.value = btn.dataset.name;
+        inputSlug.value = btn.dataset.slug;
+        inputDesc.value = btn.dataset.desc;
+        inputStatus.value = btn.dataset.status;
+        
+        // Smooth scroll to form
+        window.scrollTo({
+          top: form.getBoundingClientRect().top + window.scrollY - 120,
+          behavior: 'smooth'
+        });
+      });
+    });
+
+    resetBtn.addEventListener('click', () => {
+      form.action = '/blog/admin/tags/create';
+      formTitle.textContent = 'Create Tag';
+      resetBtn.style.display = 'none';
+      form.reset();
+      inputId.value = '';
+    });
+  });
+</script>
+
+<%- include('layout/footer') %>

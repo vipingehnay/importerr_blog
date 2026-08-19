@@ -1,0 +1,97 @@
+<%- include('layout/header') %>
+
+<div class="admin-header-row" style="margin-bottom: 2.5rem;">
+  <div>
+    <h1 class="admin-page-title">Manage 301 Redirects</h1>
+    <p style="color: var(--text-sub); margin-top: 0.25rem;">Resolve broken links and redirect old slugs to new URLs seamlessly to preserve search engine rank authority.</p>
+  </div>
+</div>
+
+<div class="editor-layout" style="grid-template-columns: 1fr 360px; gap: 2rem;">
+  
+  <!-- Redirect Rules Table (Left Column) -->
+  <div class="card" style="border-radius: 16px;">
+    <div class="card-header" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+      <span>Active Redirect Rules</span>
+    </div>
+    <div class="card-body" style="padding: 0;">
+      <% if (redirects.length === 0) { %>
+        <div style="padding: 4rem 2rem; text-align: center; color: var(--text-muted);">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); margin-bottom: 0.75rem;">
+            <path d="M16 3h5v5"></path>
+            <path d="M4 20L21 3"></path>
+            <path d="M21 16v5h-5"></path>
+          </svg>
+          <p style="font-weight: 600; font-size: 0.95rem; color: var(--text-main); margin-bottom: 0.25rem;">No redirect rules set</p>
+          <p style="font-size: 0.82rem;">Create custom redirect rules to forward outdated paths automatically.</p>
+        </div>
+      <% } else { %>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>From Path (Old)</th>
+              <th style="width: 40px; text-align: center;">Flow</th>
+              <th>To Path (New)</th>
+              <th>Type</th>
+              <th style="text-align: right; width: 120px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% redirects.forEach(rule => { %>
+              <tr>
+                <td style="font-family: monospace; font-size: 0.82rem; color: var(--color-red); font-weight: 600;">
+                  <%= rule.fromPath %>
+                </td>
+                <td style="text-align: center; color: var(--text-muted); font-size: 1.1rem; vertical-align: middle;">
+                  &rarr;
+                </td>
+                <td style="font-family: monospace; font-size: 0.82rem; color: #10B981; font-weight: 600;">
+                  <%= rule.toPath %>
+                </td>
+                <td style="vertical-align: middle;">
+                  <span class="badge" style="background: rgba(37, 99, 235, 0.05); color: var(--color-blue); border: 1px solid rgba(37, 99, 235, 0.1);">301 Permanent</span>
+                </td>
+                <td style="text-align: right; vertical-align: middle;">
+                  <form action="/blog/admin/redirects/delete/<%= rule.id %>" method="POST" style="display: inline;" data-confirm="Are you sure you want to delete this redirect rule? Old URL links will no longer redirect.">
+                    <button type="submit" class="btn btn-danger" style="padding: 0.4rem 0.75rem; font-size: 0.75rem; border-radius: 6px;">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Create New Rule Form (Right Column Card) -->
+  <div class="card" style="border-radius: 16px; height: fit-content; position: sticky; top: 100px;">
+    <div class="card-header" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+      <span>Create Redirect Rule</span>
+    </div>
+    <div class="card-body" style="padding: 1.5rem;">
+      <form action="/blog/admin/redirects/create" method="POST">
+        <div class="form-group">
+          <label for="fromPath">From Path (Relative URL)</label>
+          <input type="text" id="fromPath" name="fromPath" class="form-control" placeholder="e.g. /blog/old-slug" required style="border-radius: 8px; font-family: monospace; font-size: 0.85rem;">
+          <span style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.35; display: block; margin-top: 0.25rem;">Must start with a leading slash. Example: <code>/blog/old-sourcing-guide</code></span>
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label for="toPath">To Path (Relative / Absolute)</label>
+          <input type="text" id="toPath" name="toPath" class="form-control" placeholder="e.g. /blog/new-sourcing-guide" required style="border-radius: 8px; font-family: monospace; font-size: 0.85rem;">
+          <span style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.35; display: block; margin-top: 0.25rem;">Where traffic should go. Must start with a leading slash.</span>
+        </div>
+        
+        <div style="margin-top: 1.75rem;">
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; border-radius: 20px;">
+            Add Redirect Rule
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<%- include('layout/footer') %>

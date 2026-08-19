@@ -1,0 +1,432 @@
+<%- include('layout/header') %>
+
+<!-- Include Quill WYSIWYG Stylesheet and Library -->
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+
+<% 
+  const isEdit = typeof article !== 'undefined' && article !== null;
+  const formAction = isEdit ? `/blog/admin/articles/update/${article.id}` : '/blog/admin/articles/create';
+  const pageTitle = isEdit ? 'Edit Article' : 'Create New Article';
+  
+  // Set up values
+  const artTitle = isEdit ? article.title : '';
+  const artSlug = isEdit ? article.slug : '';
+  const artExcerpt = isEdit ? article.excerpt : '';
+  const artContent = isEdit ? article.content : '';
+  const artFeaturedImage = isEdit ? article.featuredImage : '';
+  const artCategory = isEdit ? article.category : '';
+  const artAuthor = isEdit ? article.author : 'auth_1';
+  const artStatus = isEdit ? article.status : 'draft';
+  const artIsFeatured = isEdit ? article.isFeatured : false;
+  const artPillar = isEdit ? article.pillarArticle : false;
+  const artPublishedAt = isEdit ? new Date(article.publishedAt || Date.now()).toISOString().substring(0, 16) : new Date().toISOString().substring(0, 16);
+  
+  const seoTitle = isEdit && article.seo ? article.seo.title : '';
+  const seoDesc = isEdit && article.seo ? article.seo.description : '';
+  const seoCanonical = isEdit && article.seo ? article.seo.canonicalUrl : '';
+  const seoOgTitle = isEdit && article.seo ? article.seo.ogTitle : '';
+  const seoOgDesc = isEdit && article.seo ? article.seo.ogDescription : '';
+  const seoOgImg = isEdit && article.seo ? article.seo.ogImage : '';
+  const seoTwTitle = isEdit && article.seo ? article.seo.twitterTitle : '';
+  const seoTwDesc = isEdit && article.seo ? article.seo.twitterDescription : '';
+  const seoIndex = isEdit && article.seo ? article.seo.index !== false : true;
+  const seoFollow = isEdit && article.seo ? article.seo.follow !== false : true;
+  
+  const artTakeaways = isEdit && article.keyTakeaways ? article.keyTakeaways.join('\n') : '';
+  const artFaqs = isEdit && article.faq ? article.faq : [];
+%>
+
+<div class="admin-header-row" style="margin-bottom: 3rem;">
+  <div>
+    <h1 class="admin-page-title"><%= pageTitle %></h1>
+    <p style="color: var(--text-sub); margin-top: 0.25rem;">
+      <%= isEdit ? `Editing article content (ID: ${article.id})` : 'Fill in the fields below to compose a new sourcing guide.' %>
+    </p>
+  </div>
+  <div>
+    <a href="/blog/admin/articles" class="btn btn-secondary" style="border-radius: 20px;">
+      Cancel & Back
+    </a>
+  </div>
+</div>
+
+<form action="<%= formAction %>" method="POST" id="article-form">
+  <div class="editor-layout">
+    
+    <!-- Main Content Area (Left Column) -->
+    <div class="editor-main-col">
+      
+      <!-- Primary Fields Card -->
+      <div class="card" style="border-radius: 16px;">
+        <div class="card-header" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+          <span>Article Canvas</span>
+        </div>
+        <div class="card-body" style="padding: 2rem;">
+          <div class="form-group">
+            <label for="title">Article Title</label>
+            <input type="text" id="title" name="title" class="form-control" placeholder="e.g. How to Source Products from China" value="<%= artTitle %>" required style="font-size: 1.1rem; padding: 0.85rem 1.15rem; font-weight: 600;">
+          </div>
+          
+          <div class="form-group">
+            <label for="slug">URL Slug</label>
+            <input type="text" id="slug" name="slug" class="form-control" placeholder="how-to-source-products-from-china" value="<%= artSlug %>" required style="background: #FAFAFA;">
+            <span style="font-size: 0.75rem; color: var(--text-muted); padding-left: 0.25rem;">Must be clean and unique. Automatically generated from title if blank.</span>
+          </div>
+          
+          <div class="form-group">
+            <label for="excerpt">Excerpt / Short Description</label>
+            <textarea id="excerpt" name="excerpt" class="form-control" placeholder="Write a catchy 2-3 sentence description summarizing the article. Used in grids and default meta descriptions." rows="3" required style="line-height: 1.5;"><%= artExcerpt %></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="editor-container">Body Content (Visual WYSIWYG Editor)</label>
+            
+            <!-- Quill editor theme container -->
+            <div style="border-radius: 8px; overflow: hidden; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm);">
+              <div id="editor-container" style="height: 500px; font-family: 'Inter', sans-serif; font-size: 1.05rem; background: #FFFFFF;">
+                <!-- Prefilled HTML loads here -->
+              </div>
+            </div>
+
+            <!-- Hidden textarea to store and submit HTML -->
+            <textarea id="content" name="content" style="display: none;" required></textarea>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Key Takeaways & FAQ Card -->
+      <div class="card" style="border-radius: 16px;">
+        <div class="card-header">
+          <span>Key Takeaways & FAQ Schema Blocks</span>
+        </div>
+        <div class="card-body" style="padding: 2rem;">
+          <div class="form-group">
+            <label for="key_takeaways">Key Takeaways (One per line)</label>
+            <textarea id="key_takeaways" name="key_takeaways" class="form-control" placeholder="Verify supplier registrations.&#10;Evaluate production-grade samples first.&#10;Calculate landed customs costs." rows="4" style="line-height: 1.5; font-family: monospace; font-size: 0.9rem;"><%= artTakeaways %></textarea>
+          </div>
+          
+          <div class="form-group" style="margin-top: 2rem;">
+            <label style="font-weight: 700;">FAQ Accordion Grid Editor</label>
+            <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1rem;">These items will render on the article page and dynamically register valid JSON-LD schemas in search headers.</p>
+            
+            <div id="faq-editor-container" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 0.5rem;">
+              <% artFaqs.forEach((faq, index) => { %>
+                <div class="faq-row-item card" style="margin-bottom: 0; padding: 1.25rem; border: 1px solid var(--border-subtle); border-radius: 10px; background: #FAFAFA;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                    <span style="font-weight: 800; font-size: 0.8rem; color: var(--color-brand); text-transform: uppercase; letter-spacing: 0.05em;">FAQ Accordion Item</span>
+                    <button type="button" class="btn btn-danger remove-faq-btn" style="padding: 0.25rem 0.6rem; font-size: 0.72rem; border-radius: 20px;">Remove</button>
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0.75rem;">
+                    <input type="text" name="faq_q[]" value="<%= faq.q %>" class="form-control" placeholder="Enter Question Details" required>
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <textarea name="faq_a[]" class="form-control" placeholder="Enter Answer Details" rows="2" required style="line-height: 1.4;"><%= faq.a %></textarea>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+            
+            <button type="button" id="add-faq-btn" class="btn btn-secondary" style="margin-top: 1rem; font-size: 0.82rem; padding: 0.5rem 1rem; border-radius: 20px; border-color: var(--color-brand); color: var(--color-brand);">
+              + Add FAQ Question Accordion
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- SEO Parameters Card -->
+      <div class="card" style="border-radius: 16px;">
+        <div class="card-header">
+          <span>Search Engine Optimization (SEO & Meta Overrides)</span>
+        </div>
+        <div class="card-body" style="padding: 2rem;">
+          <div class="form-group">
+            <label for="seo_title">SEO Title Override</label>
+            <input type="text" id="seo_title" name="seo_title" class="form-control" placeholder="e.g. How to Import from China to India | Importerr" value="<%= seoTitle %>">
+            <div class="character-counter">
+              <span>Google limits title tags to ~60 chars.</span>
+              <span id="seo-title-count">0 / 60 chars</span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="meta_description">Meta Description Override</label>
+            <textarea id="meta_description" name="meta_description" class="form-control" placeholder="Learn how to find verified Chinese factories, negotiate shipping MOQs, and clear custom duties..." rows="3" style="line-height: 1.5;"><%= seoDesc %></textarea>
+            <div class="character-counter">
+              <span>Google limits snippet description to ~160 chars.</span>
+              <span id="meta-desc-count">0 / 160 chars</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="canonical_url">Canonical URL (Override default URL link)</label>
+            <input type="url" id="canonical_url" name="canonical_url" class="form-control" placeholder="https://importerr.com/blog/sourcing-guide-original" value="<%= seoCanonical %>">
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="og_title">Open Graph Title</label>
+              <input type="text" id="og_title" name="og_title" class="form-control" placeholder="Facebook/LinkedIn share title" value="<%= seoOgTitle %>">
+            </div>
+            <div class="form-group">
+              <label for="og_image">Open Graph Image URL</label>
+              <input type="text" id="og_image" name="og_image" class="form-control" placeholder="https://..." value="<%= seoOgImg %>">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="og_description">Open Graph Description</label>
+            <textarea id="og_description" name="og_description" class="form-control" placeholder="Brief summary displayed during social media sharing." rows="2" style="line-height: 1.4;"><%= seoOgDesc %></textarea>
+          </div>
+          
+          <div class="form-row" style="margin-top: 1rem;">
+            <div class="form-group">
+              <label for="twitter_title">Twitter / X Card Title</label>
+              <input type="text" id="twitter_title" name="twitter_title" class="form-control" placeholder="Twitter/X Share Title" value="<%= seoTwTitle %>">
+            </div>
+            <div class="form-group">
+              <label for="twitter_description">Twitter / X Card Description</label>
+              <textarea id="twitter_description" name="twitter_description" class="form-control" placeholder="Twitter/X Share Description" rows="2" style="line-height: 1.4;"><%= seoTwDesc %></textarea>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 2.5rem; margin-top: 2rem; border-top: 1px solid var(--border-light); padding-top: 1.5rem;">
+            <label class="form-check">
+              <input type="checkbox" name="seo_index" value="true" <%= seoIndex ? 'checked' : '' %>>
+              Allow search engine indexing (index)
+            </label>
+            <label class="form-check">
+              <input type="checkbox" name="seo_follow" value="true" <%= seoFollow ? 'checked' : '' %>>
+              Allow link following (follow)
+            </label>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+    
+    <!-- Sidebar Controls (Right Column) -->
+    <div class="editor-sidebar-col">
+      
+      <!-- Publication State Card -->
+      <div class="card" style="border-radius: 16px;">
+        <div class="card-header" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+          <span>Publish Settings</span>
+        </div>
+        <div class="card-body" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="status">Publication Status</label>
+            <select id="status" name="status" class="form-control">
+              <option value="draft" <%= artStatus === 'draft' ? 'selected' : '' %>>Draft</option>
+              <option value="published" <%= artStatus === 'published' ? 'selected' : '' %>>Published Immediately</option>
+              <option value="scheduled" <%= artStatus === 'scheduled' ? 'selected' : '' %>>Scheduled</option>
+              <option value="archived" <%= artStatus === 'archived' ? 'selected' : '' %>>Archived / Deleted</option>
+            </select>
+          </div>
+          
+          <div class="form-group" style="margin-bottom: 0;" id="publish-date-group">
+            <label for="publishedAt">Publication Date & Time</label>
+            <input type="datetime-local" id="publishedAt" name="publishedAt" class="form-control" value="<%= artPublishedAt %>">
+            <span style="font-size: 0.75rem; color: var(--text-muted);">For "Scheduled" status, this determines when the article auto-publishes.</span>
+          </div>
+
+          <div style="border-top: 1px solid var(--border-light); padding-top: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem;">
+            <label class="form-check">
+              <input type="checkbox" name="isFeatured" value="true" <%= artIsFeatured ? 'checked' : '' %>>
+              Primary Featured Article
+            </label>
+            <label class="form-check">
+              <input type="checkbox" name="pillarArticle" value="true" <%= artPillar ? 'checked' : '' %>>
+              Pillar Content Guide
+            </label>
+          </div>
+          
+          <div style="border-top: 1px solid var(--border-light); padding-top: 1.25rem;">
+            <button type="submit" id="save-submit-btn" class="btn btn-primary" style="width: 100%; padding: 0.85rem; border-radius: 20px;">
+              Save & Apply Settings
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Meta Classifications Card -->
+      <div class="card" style="border-radius: 16px;">
+        <div class="card-header">
+          <span>Metadata Classifications</span>
+        </div>
+        <div class="card-body" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="category">Category</label>
+            <select id="category" name="category" class="form-control" required>
+              <option value="">-- Select Category --</option>
+              <% categories.forEach(cat => { %>
+                <option value="<%= cat.slug %>" <%= artCategory === cat.slug ? 'selected' : '' %>><%= cat.name %></option>
+              <% }) %>
+            </select>
+          </div>
+          
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="author">Assigned Author</label>
+            <select id="author" name="author" class="form-control" required>
+              <% authors.forEach(auth => { %>
+                <option value="<%= auth.slug %>" <%= artAuthor === auth.slug ? 'selected' : '' %>><%= auth.name %></option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>Associated Tags</label>
+            <div style="max-height: 160px; overflow-y: auto; border: 1px solid var(--border-subtle); padding: 0.75rem; border-radius: 8px; display: flex; flex-direction: column; gap: 0.5rem; background: #FFFFFF; box-shadow: var(--shadow-sm);">
+              <% tags.forEach(tag => { %>
+                <label style="display: flex; align-items: center; gap: 0.55rem; font-size: 0.85rem; cursor: pointer; font-weight: 600; color: var(--text-sub);">
+                  <input type="checkbox" name="tags[]" value="<%= tag.slug %>" <%= (isEdit && article.tags && article.tags.includes(tag.slug)) ? 'checked' : '' %> style="accent-color: var(--color-brand);">
+                  <%= tag.name %>
+                </label>
+              <% }) %>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Featured Image Card -->
+      <div class="card" style="border-radius: 16px;">
+        <div class="card-header">
+          <span>Featured Card Image</span>
+        </div>
+        <div class="card-body" style="padding: 1.5rem;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="featured_image_url">Image Resource URL</label>
+            <input type="text" id="featured_image_url" name="featuredImage" class="form-control" placeholder="https://..." value="<%= artFeaturedImage %>">
+            <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.45rem; display: block; padding-left: 0.1rem; line-height: 1.35;">
+              Copy URL of compressed WebP from the <a href="/blog/admin/media" target="_blank" style="color: var(--color-blue); font-weight: 700; text-decoration: underline;">Media Library &nearr;</a>.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Google Preview Card -->
+      <div class="card" style="border-radius: 16px;">
+        <div class="card-header">
+          <span>Google Snippet Live Preview</span>
+        </div>
+        <div class="card-body" style="padding: 1.25rem;">
+          <div class="seo-preview-box">
+            <div class="seo-preview-url" id="preview-url">importerr.com/blog/slug</div>
+            <div class="seo-preview-title" id="preview-title">Google Snippet Title Override</div>
+            <div class="seo-preview-desc" id="preview-desc">Enter description summary to simulate how the article will list in search results...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pre-Publish SEO Checklist Card -->
+      <div class="card" style="border-radius: 16px;">
+        <div class="card-header">
+          <span>Pre-Publish SEO Checklist</span>
+        </div>
+        <div class="card-body seo-checklist-card">
+          <ul class="seo-checklist">
+            <li class="seo-check-item danger" id="chk-title">Main Title exists</li>
+            <li class="seo-check-item danger" id="chk-content">HTML Heading tags present (H2/H3)</li>
+            <li class="seo-check-item danger" id="chk-excerpt">Summary Excerpt exists</li>
+            <li class="seo-check-item danger" id="chk-seotitle">SEO title set</li>
+            <li class="seo-check-item danger" id="chk-meta">Meta description set</li>
+            <li class="seo-check-item danger" id="chk-image">Featured Image linked</li>
+            <li class="seo-check-item danger" id="chk-category">Category selected</li>
+            <li class="seo-check-item danger" id="chk-author">Author assigned</li>
+          </ul>
+        </div>
+      </div>
+      
+    </div>
+    
+  </div>
+</form>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. Initialize Quill WYSIWYG Editor
+    const quill = new Quill('#editor-container', {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          [{ 'header': [2, 3, 4, false] }],
+          ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+          ['blockquote', 'code-block'],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          [{ 'align': [] }],
+          ['link', 'image', 'video'],                       // link and media
+          ['clean']                                         // remove formatting button
+        ]
+      }
+    });
+
+    const hiddenTextarea = document.getElementById('content');
+    const form = document.getElementById('article-form');
+
+    // 2. Load prefilled HTML content if in edit mode
+    <% if (isEdit && artContent) { %>
+      quill.root.innerHTML = `<%- artContent.replace(/`/g, '\\`').replace(/<\/script>/g, '<\\/script>') %>`;
+      hiddenTextarea.value = quill.root.innerHTML;
+    <% } %>
+
+    // 3. Sync Quill rich HTML into the hidden textarea in real-time & dispatch input event for checklist
+    quill.on('text-change', () => {
+      const editorHtml = quill.root.innerHTML;
+      if (editorHtml === '<p><br></p>' || editorHtml.trim() === '') {
+        hiddenTextarea.value = '';
+      } else {
+        hiddenTextarea.value = editorHtml;
+      }
+      hiddenTextarea.dispatchEvent(new Event('input'));
+    });
+
+    // 5. Toggle schedule widget input visibility based on select status choice
+    const statusSelect = document.getElementById('status');
+    const scheduleGroup = document.getElementById('publish-date-group');
+    if (statusSelect && scheduleGroup) {
+      function checkStatus() {
+        if (statusSelect.value === 'scheduled') {
+          scheduleGroup.style.display = 'flex';
+        } else {
+          scheduleGroup.style.display = 'none';
+        }
+      }
+      statusSelect.addEventListener('change', checkStatus);
+      checkStatus(); // Initial call
+    }
+
+    // 6. Dynamic FAQ Row Managers
+    const faqContainer = document.getElementById('faq-editor-container');
+    const addFaqBtn = document.getElementById('add-faq-btn');
+    
+    if (addFaqBtn && faqContainer) {
+      addFaqBtn.addEventListener('click', () => {
+        const row = document.createElement('div');
+        row.className = 'faq-row-item card';
+        row.style.cssText = 'margin-bottom: 0; padding: 1.25rem; border: 1px solid var(--border-subtle); border-radius: 10px; background: #FAFAFA;';
+        
+        row.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <span style="font-weight: 800; font-size: 0.8rem; color: var(--color-brand); text-transform: uppercase; letter-spacing: 0.05em;">FAQ Accordion Item</span>
+            <button type="button" class="btn btn-danger remove-faq-btn" style="padding: 0.25rem 0.6rem; font-size: 0.72rem; border-radius: 20px;">Remove</button>
+          </div>
+          <div class="form-group" style="margin-bottom: 0.75rem;">
+            <input type="text" name="faq_q[]" class="form-control" placeholder="Enter Question Details" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <textarea name="faq_a[]" class="form-control" placeholder="Enter Answer Details" rows="2" required></textarea>
+          </div>
+        `;
+        
+        faqContainer.appendChild(row);
+      });
+      
+      faqContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-faq-btn')) {
+          e.target.closest('.faq-row-item').remove();
+        }
+      });
+    }
+  });
+</script>
+
+<%- include('layout/footer') %>

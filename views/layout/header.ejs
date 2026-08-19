@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <% 
+    // Fallback defaults
+    const metaTitle = (typeof seo !== 'undefined' && seo.title) ? seo.title : (typeof title !== 'undefined' ? `${title} | Importerr` : 'Importerr Blog | China Sourcing & Importing Guides');
+    const metaDesc = (typeof seo !== 'undefined' && seo.description) ? seo.description : (typeof excerpt !== 'undefined' ? excerpt : 'Practical guides, insights and resources for sourcing products, importing from China and growing your business.');
+    const canonicalLink = (typeof seo !== 'undefined' && seo.canonicalUrl) ? seo.canonicalUrl : currentUrl;
+    const ogImg = (typeof seo !== 'undefined' && seo.ogImage) ? seo.ogImage : (typeof featuredImage !== 'undefined' ? featuredImage : 'https://www.importerr.com/static/media/comimport.3838f084f6791c3ea895.png');
+    const robotsIdx = (typeof seo !== 'undefined' && seo.index === false) ? 'noindex' : 'index';
+    const robotsFlw = (typeof seo !== 'undefined' && seo.follow === false) ? 'nofollow' : 'follow';
+  %>
+  
+  <title><%= metaTitle %></title>
+  <meta name="description" content="<%= metaDesc %>">
+  <link rel="canonical" href="<%= canonicalLink %>">
+  
+  <!-- Robots directives -->
+  <meta name="robots" content="<%= robotsIdx %>, <%= robotsFlw %>">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="<%= typeof isArticle !== 'undefined' && isArticle ? 'article' : 'website' %>">
+  <meta property="og:title" content="<%= (typeof seo !== 'undefined' && seo.ogTitle) ? seo.ogTitle : metaTitle %>">
+  <meta property="og:description" content="<%= (typeof seo !== 'undefined' && seo.ogDescription) ? seo.ogDescription : metaDesc %>">
+  <meta property="og:image" content="<%= ogImg %>">
+  <meta property="og:url" content="<%= currentUrl %>">
+  <meta property="og:site_name" content="Importerr">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= (typeof seo !== 'undefined' && seo.twitterTitle) ? seo.twitterTitle : metaTitle %>">
+  <meta name="twitter:description" content="<%= (typeof seo !== 'undefined' && seo.twitterDescription) ? seo.twitterDescription : metaDesc %>">
+  <meta name="twitter:image" content="<%= ogImg %>">
+
+  <!-- Styling -->
+  <link rel="stylesheet" href="/css/blog.css">
+
+  <!-- Google Analytics / Tag Manager Integration -->
+  <% if (typeof globalSettings !== 'undefined') { %>
+    <% if (globalSettings.google_analytics_id) { %>
+      <!-- Google Analytics (gtag.js) -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=<%= globalSettings.google_analytics_id %>"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '<%= globalSettings.google_analytics_id %>');
+      </script>
+    <% } %>
+    <% if (globalSettings.google_tag_manager_id) { %>
+      <!-- Google Tag Manager -->
+      <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','<%= globalSettings.google_tag_manager_id %>');</script>
+      <!-- End Google Tag Manager -->
+    <% } %>
+  <% } %>
+</head>
+<body>
+
+  <% if (typeof globalSettings !== 'undefined' && globalSettings.google_tag_manager_id) { %>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<%= globalSettings.google_tag_manager_id %>"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+  <% } %>
+
+  <!-- Navigation Header -->
+  <header class="navbar">
+    <a href="/blog" class="logo">
+      <img src="<%= (typeof globalSettings !== 'undefined' && globalSettings.header_logo_url) ? globalSettings.header_logo_url : 'https://www.importerr.com/static/media/comimport.3838f084f6791c3ea895.png' %>" alt="Importerr Logo" class="brand-logo-img">
+    </a>
+    <nav class="nav-links">
+      <% if (typeof globalSettings !== 'undefined' && globalSettings.header_links && globalSettings.header_links.length > 0) { %>
+        <% globalSettings.header_links.forEach(link => { %>
+          <a href="<%= link.url %>"><%= link.label %></a>
+        <% }) %>
+      <% } else { %>
+        <a href="/blog">Blog Home</a>
+        <a href="/blog/category/china-sourcing">China Sourcing</a>
+        <a href="/blog/category/importing-guides">Importing Guides</a>
+        <a href="/blog/category/ecommerce-brands">E-commerce Brands</a>
+      <% } %>
+    </nav>
+    <a href="#consultationFlow" class="nav-cta-btn">
+      <span>Share Requirement</span>
+    </a>
+  </header>

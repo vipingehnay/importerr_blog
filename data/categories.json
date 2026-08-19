@@ -1,0 +1,56 @@
+[
+  {
+    "id": "cat_1",
+    "name": "China Sourcing",
+    "slug": "china-sourcing",
+    "description": "Guides and updates for sourcing products from China factories.",
+    "status": "active",
+    "seoTitle": "China Sourcing Guide | Importerr Blog",
+    "metaDescription": "Learn how to find and source products from China manufacturers."
+  },
+  {
+    "id": "cat_2",
+    "name": "Importing Guides",
+    "slug": "importing-guides",
+    "description": "Detailed walkthroughs on custom clearances, tariffs, and importing laws.",
+    "status": "active",
+    "seoTitle": "How to Import from China | Importerr Blog",
+    "metaDescription": "Everything about import custom clearance, logistics, and legal compliance."
+  },
+  {
+    "id": "cat_3",
+    "name": "Shipping & Logistics",
+    "slug": "shipping-logistics",
+    "description": "Ocean freight, air shipping, and courier updates.",
+    "status": "active",
+    "seoTitle": "Shipping & Logistics Guides | Importerr Blog",
+    "metaDescription": "Tips on shipping products from Chinese ports to Indian warehouses."
+  },
+  {
+    "id": "cat_4",
+    "name": "E-commerce & Brands",
+    "slug": "ecommerce-brands",
+    "description": "Amazon FBA, Meesho, and Shopify D2C business tactics.",
+    "status": "active",
+    "seoTitle": "E-commerce Sourcing Strategies | Importerr Blog",
+    "metaDescription": "Build your D2C brand or Amazon retail shop with high-margin custom sourcing."
+  },
+  {
+    "id": "cat_5",
+    "name": "Importerr Updates",
+    "slug": "importerr-updates",
+    "description": "Updates about our service expansions, terms, and office news.",
+    "status": "active",
+    "seoTitle": "Importerr Service Updates & News",
+    "metaDescription": "Official announcements and updates from the Importerr sourcing team."
+  },
+  {
+    "name": "Testing",
+    "slug": "testing",
+    "description": "test",
+    "status": "active",
+    "seoTitle": "",
+    "metaDescription": "test",
+    "id": "cat_1787114849628_763"
+  }
+]

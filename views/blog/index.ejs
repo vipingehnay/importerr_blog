@@ -1,0 +1,116 @@
+<%- include('../layout/header') %>
+
+<main class="section-wrapper">
+  <!-- Blog Hero Header -->
+  <section class="blog-hero">
+    <h1>Importerr Blog</h1>
+    <p>Practical guides, factory insights, and resources for sourcing products, importing from China, and scaling your e-commerce brand.</p>
+    
+    <!-- Blog Search -->
+    <div class="search-container">
+      <form action="/blog/search" method="GET" class="search-form">
+        <input type="text" name="q" placeholder="Search guides (e.g., verifying suppliers, custom clearance)..." class="search-input" required>
+        <button type="submit" class="search-btn">Search</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Category Filter Bar -->
+  <section class="category-filters-container">
+    <div class="category-filters">
+      <a href="/blog" class="filter-btn active">All Articles</a>
+      <% categories.forEach(cat => { %>
+        <a href="/blog/category/<%= cat.slug %>" class="filter-btn"><%= cat.name %></a>
+      <% }) %>
+    </div>
+  </section>
+
+  <!-- Featured Article Section -->
+  <% if (featuredArticle) { %>
+    <section class="featured-section">
+      <div class="featured-card">
+        <div class="featured-img-wrap">
+          <a href="/blog/<%= featuredArticle.slug %>">
+            <img src="<%= featuredArticle.featuredImage || '/img/placeholder.jpg' %>" alt="<%= featuredArticle.title %>" class="featured-img" loading="eager">
+          </a>
+        </div>
+        <div class="featured-content">
+          <span class="meta-tag">Featured &bull; <%= featuredArticle.categoryName %></span>
+          <h2 class="featured-title">
+            <a href="/blog/<%= featuredArticle.slug %>"><%= featuredArticle.title %></a>
+          </h2>
+          <p class="featured-excerpt"><%= featuredArticle.excerpt %></p>
+          
+          <div class="post-author-row">
+            <img src="<%= featuredArticle.authorPhoto %>" alt="<%= featuredArticle.authorName %>" class="author-avatar">
+            <div>
+              <span class="author-name">By <a href="/blog/author/<%= featuredArticle.authorSlug %>"><%= featuredArticle.authorName %></a></span>
+              <div class="post-date-read">
+                Published: <%= featuredArticle.formattedPublishDate %>
+                <% if (featuredArticle.formattedUpdateDate && featuredArticle.formattedUpdateDate !== featuredArticle.formattedPublishDate) { %>
+                  &bull; Updated: <%= featuredArticle.formattedUpdateDate %>
+                <% } %>
+                &bull; <%= featuredArticle.readingTime %>
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <a href="/blog/<%= featuredArticle.slug %>" class="read-more-btn">
+              Read Article
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  <% } %>
+
+  <!-- Grid of Articles -->
+  <section class="article-grid-section">
+    <div class="section-title-row">
+      <h2 class="section-title">Latest Sourcing Guides</h2>
+    </div>
+    
+    <% if (articles.length === 0) { %>
+      <div class="empty-state-wrap">
+        <h3 class="empty-state-title">No articles found</h3>
+        <p class="empty-state-desc">We are busy writing fresh content. Please check back soon!</p>
+      </div>
+    <% } else { %>
+      <div class="article-grid">
+        <% articles.forEach(art => { %>
+          <article class="article-card">
+            <div class="article-img-wrap">
+              <a href="/blog/<%= art.slug %>">
+                <img src="<%= art.featuredImage %>" alt="<%= art.title %>" class="article-img" loading="lazy">
+              </a>
+            </div>
+            <div class="article-body">
+              <span class="meta-tag"><%= art.categoryName %></span>
+              <h3 class="article-title">
+                <a href="/blog/<%= art.slug %>"><%= art.title %></a>
+              </h3>
+              <p class="article-excerpt"><%= art.excerpt %></p>
+              
+              <div class="card-author-row">
+                <img src="<%= art.authorPhoto %>" alt="<%= art.authorName %>" class="card-author-img">
+                <div class="card-author-meta">
+                  <span class="card-author-name">By <a href="/blog/author/<%= art.authorSlug %>"><%= art.authorName %></a></span>
+                  <div class="post-date-read">
+                    <%= art.formattedPublishDate %> &bull; <%= art.readingTime %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+    <% } %>
+  </section>
+</main>
+
+<%- include('../layout/footer') %>

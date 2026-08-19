@@ -1,0 +1,30 @@
+[
+  {
+    "id": "tag_1",
+    "name": "Alibaba",
+    "slug": "alibaba",
+    "description": "Tips on sourcing through Alibaba safely.",
+    "status": "active"
+  },
+  {
+    "id": "tag_2",
+    "name": "Verify Supplier",
+    "slug": "verify-supplier",
+    "description": "Verify factory licensing and credentials.",
+    "status": "active"
+  },
+  {
+    "id": "tag_3",
+    "name": "MOQ Guide",
+    "slug": "moq-guide",
+    "description": "Minimum Order Quantities negotiations.",
+    "status": "active"
+  },
+  {
+    "id": "tag_4",
+    "name": "Customs Duties",
+    "slug": "customs-duties",
+    "description": "Calculating custom duties for Indian ports.",
+    "status": "active"
+  }
+]
