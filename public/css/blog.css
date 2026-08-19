@@ -1651,4 +1651,137 @@ a {
   }
 }
 
+/* ==========================================================================
+   RESPONSIVE MOBILE TYPOGRAPHY & GENERAL UX ALIGNMENTS
+   ========================================================================== */
+
+/* For Tablet and smaller screens (max-width: 768px) */
+@media (max-width: 768px) {
+  /* Hero headers */
+  .blog-hero h1 {
+    font-size: 2.15rem !important;
+    letter-spacing: -0.03em !important;
+  }
+  .blog-hero p {
+    font-size: 0.95rem !important;
+    line-height: 1.45 !important;
+  }
+  
+  /* Article detail page headers */
+  .post-header h1 {
+    font-size: 1.85rem !important;
+    letter-spacing: -0.03em !important;
+    line-height: 1.15 !important;
+    margin-bottom: 1.25rem !important;
+  }
+  .post-meta-details {
+    gap: 0.85rem !important;
+    font-size: 0.82rem !important;
+  }
+
+  /* Article content text size scale-down for comfortable reading */
+  .article-content-body {
+    font-size: 1.02rem !important;
+    line-height: 1.65 !important;
+  }
+  .article-content-body h2 {
+    font-size: 1.45rem !important;
+    margin: 2.5rem 0 1.15rem 0 !important;
+    letter-spacing: -0.03em !important;
+  }
+  .article-content-body h3 {
+    font-size: 1.22rem !important;
+    margin: 2rem 0 0.85rem 0 !important;
+    letter-spacing: -0.02em !important;
+  }
+  .article-content-body blockquote {
+    font-size: 1.12rem !important;
+    margin: 2rem 0 !important;
+    padding-left: 1.25rem !important;
+  }
+  .article-content-body table {
+    font-size: 0.85rem !important;
+    margin: 2rem 0 !important;
+  }
+  .article-content-body th, .article-content-body td {
+    padding: 0.75rem 0.85rem !important;
+  }
+
+  /* Key Takeaways block */
+  .key-takeaways-block {
+    padding: 1.25rem !important;
+    margin: 2rem 0 !important;
+  }
+  .takeaway-header {
+    font-size: 1.05rem !important;
+    margin-bottom: 1rem !important;
+  }
+  .takeaway-list li {
+    font-size: 0.92rem !important;
+    margin-bottom: 0.65rem !important;
+  }
+}
+
+/* For small mobile devices (max-width: 480px) */
+@media (max-width: 480px) {
+  /* Hero headers */
+  .blog-hero h1 {
+    font-size: 1.75rem !important;
+    letter-spacing: -0.03em !important;
+  }
+  .blog-hero p {
+    font-size: 0.88rem !important;
+  }
+
+  /* Article detail page headers */
+  .post-header h1 {
+    font-size: 1.5rem !important;
+    letter-spacing: -0.025em !important;
+    line-height: 1.2 !important;
+    margin-bottom: 1rem !important;
+  }
+  .post-meta-details {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+  }
+
+  /* Article body text */
+  .article-content-body {
+    font-size: 0.95rem !important;
+    line-height: 1.6 !important;
+  }
+  .article-content-body h2 {
+    font-size: 1.28rem !important;
+    margin: 2rem 0 1rem 0 !important;
+  }
+  .article-content-body h3 {
+    font-size: 1.1rem !important;
+    margin: 1.75rem 0 0.75rem 0 !important;
+  }
+  .article-content-body blockquote {
+    font-size: 1.02rem !important;
+    margin: 1.75rem 0 !important;
+    padding-left: 1rem !important;
+  }
+  .article-content-body table {
+    font-size: 0.8rem !important;
+  }
+  .article-content-body th, .article-content-body td {
+    padding: 0.6rem 0.5rem !important;
+  }
+
+  /* Key Takeaways block */
+  .key-takeaways-block {
+    padding: 1.1rem !important;
+    margin: 1.5rem 0 !important;
+  }
+  .takeaway-header {
+    font-size: 0.95rem !important;
+  }
+  .takeaway-list li {
+    font-size: 0.85rem !important;
+  }
+}
+
 
