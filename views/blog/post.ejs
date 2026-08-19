@@ -93,12 +93,12 @@
   <!-- Breadcrumbs -->
   <nav class="breadcrumbs-nav">
     <a href="/">Home</a>
-    <span>&rarr;</span>
+    <span class="breadcrumb-separator">&rarr;</span>
     <a href="/blog">Blog</a>
-    <span>&rarr;</span>
+    <span class="breadcrumb-separator">&rarr;</span>
     <a href="/blog/category/<%= category %>"><%= categoryName %></a>
-    <span>&rarr;</span>
-    <span style="color: var(--text-muted);"><%= title %></span>
+    <span class="breadcrumb-separator">&rarr;</span>
+    <span class="breadcrumb-current" style="color: var(--text-muted);"><%= title %></span>
   </nav>
 
   <!-- Post Header -->
