@@ -689,6 +689,11 @@ a {
   align-items: center;
   gap: 0.88rem;
 }
+@media (max-width: 1240px) {
+  .share-sidebar-col {
+    display: none !important;
+  }
+}
 .share-title {
   font-size: 0.65rem;
   font-weight: 800;
